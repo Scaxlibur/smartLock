@@ -35,7 +35,7 @@ bool SERVO::servo_init()
     uart_write_bytes(UART_NUM_SERVO, servoCommand, strlen(servoCommand)); // 发送，然后读取串口
     char UARTdata[64];
     servoUARTread(UARTdata);
-    strcat(servoRetrun, "#");// 拼凑出舵机“应该”有的返回值
+    strcat(servoRetrun, "#");// 拼凑出舵机“应该”有的返回值:#000!
     strcat(servoRetrun, servoID);
     strcat(servoRetrun, "!");
     char *isOK = NULL;                          // 串口读到的信息里有“应该”有的返回值吗？
@@ -52,7 +52,7 @@ bool SERVO::servo_init()
         uart_write_bytes(UART_NUM_SERVO, servoCommand, strlen(servoCommand));
         servoUARTread(UARTdata);
         strcat(servoRetrun, "#");// 舵机的工作模式应该是舵机模式，顺时针最大270度，即1
-        strcat(servoRetrun, servoID);
+        strcat(servoRetrun, servoID);//#000PMOD1!
         strcat(servoRetrun, "PMOD1!");
         isOK = strstr(UARTdata, servoRetrun);
         if (isOK != NULL)

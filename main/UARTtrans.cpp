@@ -68,6 +68,6 @@ void servoUARTread(char *UARTdata)
 {
     size_t bufferLenth;
     ESP_ERROR_CHECK(uart_get_buffered_data_len(UART_NUM_SERVO, &bufferLenth));
-    uart_read_bytes(UART_NUM_SERVO, UARTdata, bufferLenth, 100);
+    uart_read_bytes(UART_NUM_SERVO, UARTdata, bufferLenth, READ_WAIT_TICK);
     ESP_ERROR_CHECK(uart_flush(UART_NUM_SERVO));
 }
