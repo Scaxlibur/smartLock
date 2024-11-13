@@ -1,5 +1,5 @@
-#ifndef _UARTtrans_HPP
-#define _UARTtrans_HPP
+#ifndef _UARTtrans_HPP_
+#define _UARTtrans_HPP_
 #pragma once
 
 #include "driver/uart.h" 
