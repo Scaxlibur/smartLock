@@ -17,7 +17,6 @@
 #include "lwip/sys.h"
 #include "lwip/dns.h"
 #include "lwip/netdb.h"
-
 // 事件处理函数
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) 
 {
@@ -70,18 +69,11 @@ void mqtt_app_start(void)
 {
     // 1、定义一个MQTT客户端配置结构体，输入MQTT的url
     esp_mqtt_client_config_t mqtt_cfg = {
-        .broker ={
-            .address = {
-                .uri = "mqtt://feisibo.top",
-            }                
-        },
-        .credentials = {
-            .username = "smartLock",
-            .set_null_client_id = true,
-            .authentication = {
-                .password = "",
-            }
-        },
+        .broker.address.uri = "mqtt://xxx.xxx.xxx.xxx",// ip地址
+        .broker.address.port = 1883,
+        .credentials.username = "ESP32S3"
+        //.alpn_protos,
+        // .use_secure_element
     };
 
     // 2、通过esp_mqtt_client_init获取一个MQTT客户端结构体指针，参数是MQTT客户端配置结构体
@@ -89,7 +81,7 @@ void mqtt_app_start(void)
 
     // 3、注册MQTT事件
 
-    esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, client);
+    esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, client);
 
     // 4、开启MQTT功能
     esp_mqtt_client_start(client);
