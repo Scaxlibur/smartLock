@@ -15,9 +15,11 @@
 #include "nvs_flash.h"
 #include "esp_smartconfig.h"
 
-/* 宏定义WiFi名称和密码 */
-#define MY_WIFI_SSID    "ESP32YYDS"
-#define MY_WIFI_PASSWD  "ESP32YYDS"
+#include "authorsPrivate.h" 
+
+/* 宏定义WiFi名称和密码,定义于authorsPrivate.H */
+#define MY_WIFI_SSID    WIFI_SSID
+#define MY_WIFI_PASSWD  WIFI_PASSWD
 
 /* 宏定义WiFi连接事件标志位、连接失败标志位及智能配网标志位 */
 #define WIFI_CONNECTED_BIT  BIT0

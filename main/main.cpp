@@ -8,7 +8,7 @@
 /*
 void servotask(void *arg)
 {
-    SERVO servo;  //创建舵机对象
+    SERVO_class servo;  //创建舵机对象
     printf("舵机对象已创建\n");
     while (1)
     {
@@ -19,7 +19,7 @@ void servotask(void *arg)
 }
 */
 
-void WIFItask(void *arg)
+void WIFI_MQTT_task(void *arg)
 {
     /* 初始化非易失性存储库 (NVS) */
     esp_err_t ret = nvs_flash_init();
@@ -31,26 +31,21 @@ void WIFItask(void *arg)
     printf("ESP_WIFI_MODE_STA \n");
     wifi_init_sta();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    mqtt_app_start();
-    while(1) vTaskDelay(10 / portTICK_PERIOD_MS);
-}
-
-void MQTTtask(void *arg)
-{
-    while(1) vTaskDelay(10 / portTICK_PERIOD_MS);
+    MQTT_class mqtt;
+    while(1) {
+        vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
 }
 
 void IDtask(void *arg)
 {
-    IDENTIFIER identifier;      //创建指纹识别器对象    
+    IDENTIFIER_class identifier;      //创建指纹识别器对象    
     
-    identifier.Add_FR();
+    //identifier.Add_FR();
     while (1)
     {
         identifier.press_FR();
-        #ifdef TEST
-        printf("\nIDtask任务调用\n");
-        #endif
+        
         vTaskDelay(5000/portTICK_PERIOD_MS);
     }    
 }
@@ -59,7 +54,6 @@ extern "C" void app_main(void)
 {
     printf("power on\n");
     //xTaskCreate(servotask, "servotask", 12 * 1024, NULL, 1, NULL);
-    //xTaskCreate(IDtask, "idtask", 12 * 1024, NULL, 1, NULL);
-    xTaskCreate(WIFItask, "wifitask", 12 * 1024, NULL, 1, NULL);
-    xTaskCreate(MQTTtask, "mqtttask", 12 * 1024, NULL, 1, NULL);
+    xTaskCreate(IDtask, "idtask", 12 * 1024, NULL, 2, NULL);
+    xTaskCreate(WIFI_MQTT_task, "WIFI_MQTT_task", 12 * 1024, NULL, 1, NULL);
 }

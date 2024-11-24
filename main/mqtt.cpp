@@ -1,24 +1,7 @@
-#include <sys/param.h>
-#include "esp_system.h"
-#include "esp_event.h"
-#include "esp_log.h"
-#include "nvs_flash.h"
-#include "esp_netif.h"
-#include "mqtt_client.h"
-#include "driver/gpio.h"
-
-#include "lwip/err.h"
-#include "lwip/sockets.h"
-#include "lwip/sys.h"
-#include "lwip/dns.h"
-#include "lwip/netdb.h"
-
-#include "wifi.hpp"
-#include "authorsPrivate.c"
+#include "mqtt.hpp"
 
 // 事件处理函数
-
-static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) 
+ void MQTT_class::mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) 
 {
     //printf("Event dispatched from event loop base=%s, event_id=%d \n", base, event_id);
     // 获取MQTT客户端结构体指针
@@ -66,7 +49,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     }
 }
 
-void mqtt_app_start(void)
+void MQTT_class::mqtt_app_start(void)
 {
     // 1、定义一个MQTT客户端配置结构体，输入MQTT的url
     esp_mqtt_client_config_t mqtt_cfg = {
@@ -85,12 +68,24 @@ void mqtt_app_start(void)
     };
 
     // 2、通过esp_mqtt_client_init获取一个MQTT客户端结构体指针，参数是MQTT客户端配置结构体
-    esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
+    client = esp_mqtt_client_init(&mqtt_cfg);
 
     // 3、注册MQTT事件
-
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, client);
     
     // 4、开启MQTT功能
     esp_mqtt_client_start(client);
 }
+
+
+void MQTT_class::MQTTsendMessage(const char *data){
+    esp_mqtt_client_publish(client, "ESP32_Publish", data, 0, 1, 0);
+}
+
+MQTT_class::MQTT_class(){
+    mqtt_app_start();
+}
+
+MQTT_class::~MQTT_class(){
+    
+};
