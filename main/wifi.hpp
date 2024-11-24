@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __WIFI_HPP__
+#define __WIFI_HPP__
 
 #include <stdio.h>
 #include <string.h>
@@ -32,3 +33,5 @@ static void event_handler(void* arg, esp_event_base_t event_base,int32_t event_i
 static void smartconfig_init_start(void);
 
 static void wifi_init_sta(void);
+
+#endif

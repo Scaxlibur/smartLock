@@ -1,5 +1,5 @@
-#ifndef _screen_HPP
-#define _screen_HPP
+#ifndef __SCREEN_HPP__
+#define __SCREEN_HPP__
 #pragma once
 
 #include <stdint.h>

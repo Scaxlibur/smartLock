@@ -1,5 +1,5 @@
-#ifndef _fingerID_HPP
-#define _fingerID_HPP
+#ifndef __FINGERID_HPP__
+#define __FINGERID_HPP__
 #pragma once
 
 //#define TEST
