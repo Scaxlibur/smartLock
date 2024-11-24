@@ -155,7 +155,7 @@ static void wifi_init_sta(void)
     if (bits & WIFI_CONNECTED_BIT)  /* WiFi连接成功事件 */
 	{
         printf("connected to ap SSID:%s OK \n",MY_WIFI_SSID);
-        //vEventGroupDelete(wifi_event_group_handler);   /* 这一行移动到了mqtt.cpp，确保mqtt注册成功后再删除 */ /* 删除WiFi连接事件标志组，WiFi连接成功后不再需要 */
+        vEventGroupDelete(wifi_event_group_handler); /* 删除WiFi连接事件标志组，WiFi连接成功后不再需要 */
     } 
 	else if (bits & WIFI_FAIL_BIT) /* WiFi连接失败事件 */
 	{

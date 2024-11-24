@@ -30,12 +30,13 @@ void WIFItask(void *arg)
     ESP_ERROR_CHECK(ret);
     printf("ESP_WIFI_MODE_STA \n");
     wifi_init_sta();
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    mqtt_app_start();
     while(1) vTaskDelay(10 / portTICK_PERIOD_MS);
 }
 
 void MQTTtask(void *arg)
 {
-    void mqtt_app_start(void);
     while(1) vTaskDelay(10 / portTICK_PERIOD_MS);
 }
 
