@@ -8,14 +8,14 @@
 
 #include "servo.hpp"
 
-SERVO::SERVO(char out_servoID[4] = "000")
+SERVO_class::SERVO_class(char out_servoID[4] = "000")
 {
     strcpy(servoID, out_servoID);
     servo_init();
     printf("舵机对象构建");
 }
 
-SERVO::~SERVO()
+SERVO_class::~SERVO_class()
 {
     uart_driver_delete(UART_NUM_SERVO);
 }
@@ -27,7 +27,7 @@ SERVO::~SERVO()
 ****函数备注: 无
 ********************************************************************************/
 
-bool SERVO::servo_init()
+bool SERVO_class::servo_init()
 {
     init_uart2servo();      
     strcat(servoCommand, "#");// 获取舵机ID的指令
@@ -80,7 +80,7 @@ bool SERVO::servo_init()
 ****函数备注: 初始位为500，开门位为2000
 ********************************************************************************/
 
-bool SERVO::opendoor()
+bool SERVO_class::opendoor()
 {
     strcpy(servoCommand, "/0");
     strcat(servoCommand, "#");// #000P2000T1000!

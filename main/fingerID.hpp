@@ -16,7 +16,7 @@
 #define CharBuffer2 0x02
 
 
-class IDENTIFIER
+class IDENTIFIER_class
 {
     private:
 
@@ -69,8 +69,8 @@ class IDENTIFIER
 
     public:
 
-    IDENTIFIER();
-    ~IDENTIFIER();
+    IDENTIFIER_class();
+    ~IDENTIFIER_class();
 
     void Add_FR(void);
     void press_FR(void);

@@ -8,41 +8,41 @@
 
 #include "fingerID.hpp"
 
-IDENTIFIER::IDENTIFIER(void){
+IDENTIFIER_class::IDENTIFIER_class(void){
     init_uart2id();
     printf("指纹识别器对象已创建\n");
     vTaskDelay(200 / portTICK_PERIOD_MS);
     AS608_Check();
 }
 
-void IDENTIFIER::SendHead(void)
+void IDENTIFIER_class::SendHead(void)
 {
     ESP_ERROR_CHECK(uart_flush(UART_NUM_ID));
     IDUARTwrite_Bytes(PACKHEAD);
 }
 
-void IDENTIFIER::SendAddr(void)
+void IDENTIFIER_class::SendAddr(void)
 {
 
     IDUARTwrite_Bytes(IDaddr);
 }
 
-void IDENTIFIER::SendFlag(uint8_t flag)
+void IDENTIFIER_class::SendFlag(uint8_t flag)
 {
     IDUARTwrite_Bytes(flag);
 }
 
-void IDENTIFIER::SendLength(uint16_t length)
+void IDENTIFIER_class::SendLength(uint16_t length)
 {
   IDUARTwrite_Bytes(length);
 }
 
-void IDENTIFIER::Sendcmd(uint8_t cmd)
+void IDENTIFIER_class::Sendcmd(uint8_t cmd)
 {
   IDUARTwrite_Bytes(cmd);
 }
 
-void IDENTIFIER::SendCheck(uint16_t check)
+void IDENTIFIER_class::SendCheck(uint16_t check)
 {
   IDUARTwrite_Bytes(check);
 }
@@ -53,7 +53,7 @@ void IDENTIFIER::SendCheck(uint16_t check)
 功能描述：模块是否连接检测 
 返回值：模块连接了返回true 否则返回false
 *****************************************/
-bool IDENTIFIER::AS608_Check(void)
+bool IDENTIFIER_class::AS608_Check(void)
 {
     uart_flush(UART_NUM_ID);
     SendHead();
@@ -81,7 +81,7 @@ bool IDENTIFIER::AS608_Check(void)
     return true;
 }
 
-uint8_t* IDENTIFIER::JudgeStr()
+uint8_t* IDENTIFIER_class::JudgeStr()
 {
         #ifdef TEST
         printf("JudgeStr()调用\n");
@@ -109,7 +109,7 @@ uint8_t* IDENTIFIER::JudgeStr()
 //录入图像 PS_GetImage
 //功能:探测手指，探测到后录入指纹图像存于ImageBuffer。
 //模块返回确认字
-uint8_t IDENTIFIER::PS_GetImage(void)
+uint8_t IDENTIFIER_class::PS_GetImage(void)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -133,7 +133,7 @@ uint8_t IDENTIFIER::PS_GetImage(void)
 //功能:将ImageBuffer中的原始图像生成指纹特征文件存于CharBuffer1或CharBuffer2
 //参数:BufferID --> charBuffer1:0x01	charBuffer1:0x02
 //模块返回确认字
-uint8_t IDENTIFIER::PS_GenChar(uint8_t BufferID)
+uint8_t IDENTIFIER_class::PS_GenChar(uint8_t BufferID)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -157,7 +157,7 @@ uint8_t IDENTIFIER::PS_GenChar(uint8_t BufferID)
 //精确比对两枚指纹特征 PS_Match
 //功能:精确比对CharBuffer1 与CharBuffer2 中的特征文件
 //模块返回确认字
-uint8_t IDENTIFIER::PS_Match(void)
+uint8_t IDENTIFIER_class::PS_Match(void)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -181,7 +181,7 @@ uint8_t IDENTIFIER::PS_Match(void)
 //功能:以CharBuffer1或CharBuffer2中的特征文件搜索整个或部分指纹库.若搜索到，则返回页码。
 //参数:  BufferID @ref CharBuffer1	CharBuffer2
 //说明:  模块返回确认字，页码（相配指纹模板）
-uint8_t IDENTIFIER::PS_Search(uint8_t BufferID, uint16_t StartPage, uint16_t PageNum, SearchResult *p)
+uint8_t IDENTIFIER_class::PS_Search(uint8_t BufferID, uint16_t StartPage, uint16_t PageNum, SearchResult *p)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -213,7 +213,7 @@ uint8_t IDENTIFIER::PS_Search(uint8_t BufferID, uint16_t StartPage, uint16_t Pag
 //合并特征（生成模板）PS_RegModel
 //功能:将CharBuffer1与CharBuffer2中的特征文件合并生成 模板,结果存于CharBuffer1与CharBuffer2
 //说明:  模块返回确认字
-uint8_t IDENTIFIER::PS_RegModel(void)
+uint8_t IDENTIFIER_class::PS_RegModel(void)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -237,7 +237,7 @@ uint8_t IDENTIFIER::PS_RegModel(void)
 //参数:  BufferID @ref charBuffer1:0x01	charBuffer1:0x02
 //       PageID（指纹库位置号）
 //说明:  模块返回确认字
-uint8_t IDENTIFIER::PS_StoreChar(uint8_t BufferID, uint16_t PageID)
+uint8_t IDENTIFIER_class::PS_StoreChar(uint8_t BufferID, uint16_t PageID)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -263,7 +263,7 @@ uint8_t IDENTIFIER::PS_StoreChar(uint8_t BufferID, uint16_t PageID)
 //功能:  删除flash数据库中指定ID号开始的N个指纹模板
 //参数:  PageID(指纹库模板号)，N删除的模板个数。
 //说明:  模块返回确认字
-uint8_t IDENTIFIER::PS_DeletChar(uint16_t PageID, uint16_t N)
+uint8_t IDENTIFIER_class::PS_DeletChar(uint16_t PageID, uint16_t N)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -290,7 +290,7 @@ uint8_t IDENTIFIER::PS_DeletChar(uint16_t PageID, uint16_t N)
 //功能:  删除flash数据库中所有指纹模板
 //参数:  无
 //说明:  模块返回确认字
-uint8_t IDENTIFIER::PS_Empty(void)
+uint8_t IDENTIFIER_class::PS_Empty(void)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -313,7 +313,7 @@ uint8_t IDENTIFIER::PS_Empty(void)
 //功能:  写模块寄存器
 //参数:  寄存器序号RegNum:4\5\6
 //说明:  模块返回确认字
-uint8_t IDENTIFIER::PS_WriteReg(uint8_t RegNum, uint8_t DATA)
+uint8_t IDENTIFIER_class::PS_WriteReg(uint8_t RegNum, uint8_t DATA)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -344,7 +344,7 @@ uint8_t IDENTIFIER::PS_WriteReg(uint8_t RegNum, uint8_t DATA)
 //功能:  读取模块的基本参数（波特率，包大小等)
 //参数:  无
 //说明:  模块返回确认字 + 基本参数（16bytes）
-uint8_t IDENTIFIER::PS_ReadSysPara(SysPara *p)
+uint8_t IDENTIFIER_class::PS_ReadSysPara(SysPara *p)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -383,7 +383,7 @@ uint8_t IDENTIFIER::PS_ReadSysPara(SysPara *p)
 //功能:  设置模块地址
 //参数:  PS_addr
 //说明:  模块返回确认字
-uint8_t IDENTIFIER::PS_SetAddr(uint32_t PS_addr)
+uint8_t IDENTIFIER_class::PS_SetAddr(uint32_t PS_addr)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -418,7 +418,7 @@ uint8_t IDENTIFIER::PS_SetAddr(uint32_t PS_addr)
 //	该记事本逻辑上被分成 16 个页。
 //参数:  NotePageNum(0~15),Byte32(要写入内容，32个字节)
 //说明:  模块返回确认字
-uint8_t IDENTIFIER::PS_WriteNotepad(uint8_t NotePageNum, uint8_t *Byte32)
+uint8_t IDENTIFIER_class::PS_WriteNotepad(uint8_t NotePageNum, uint8_t *Byte32)
 {
     uint16_t sum = 0;
     uint8_t  ensure;
@@ -447,7 +447,7 @@ uint8_t IDENTIFIER::PS_WriteNotepad(uint8_t NotePageNum, uint8_t *Byte32)
 //功能：  读取FLASH用户区的128bytes数据
 //参数:  NotePageNum(0~15)
 //说明:  模块返回确认字+用户信息
-uint8_t IDENTIFIER::PS_ReadNotepad(uint8_t NotePageNum, uint8_t *Byte32)
+uint8_t IDENTIFIER_class::PS_ReadNotepad(uint8_t NotePageNum, uint8_t *Byte32)
 {
     uint16_t sum;
     uint8_t  ensure, i;
@@ -479,7 +479,7 @@ uint8_t IDENTIFIER::PS_ReadNotepad(uint8_t NotePageNum, uint8_t *Byte32)
 //		  很好的指纹，会很快给出搜索结果。
 //参数:  BufferID， StartPage(起始页)，PageNum（页数）
 //说明:  模块返回确认字+页码（相配指纹模板）
-uint8_t IDENTIFIER::PS_HighSpeedSearch(uint8_t BufferID, uint16_t StartPage, uint16_t PageNum, SearchResult *p)
+uint8_t IDENTIFIER_class::PS_HighSpeedSearch(uint8_t BufferID, uint16_t StartPage, uint16_t PageNum, SearchResult *p)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -511,7 +511,7 @@ uint8_t IDENTIFIER::PS_HighSpeedSearch(uint8_t BufferID, uint16_t StartPage, uin
 //功能：读有效模板个数
 //参数: 无
 //说明: 模块返回确认字+有效模板个数ValidN
-uint8_t IDENTIFIER::PS_ValidTempleteNum(uint16_t *ValidN)
+uint8_t IDENTIFIER_class::PS_ValidTempleteNum(uint16_t *ValidN)
 {
     uint16_t sum;
     uint8_t  ensure;
@@ -542,7 +542,7 @@ uint8_t IDENTIFIER::PS_ValidTempleteNum(uint16_t *ValidN)
 
 //与AS608握手 PS_HandShake
 //参数: PS_Addr地址指针
-uint8_t IDENTIFIER::PS_HandShake(uint32_t *PS_Addr)
+uint8_t IDENTIFIER_class::PS_HandShake(uint32_t *PS_Addr)
 {
     SendHead();
     SendAddr();
@@ -574,7 +574,7 @@ uint8_t IDENTIFIER::PS_HandShake(uint32_t *PS_Addr)
 //模块应答包确认码信息解析
 //功能：解析确认码错误信息返回信息
 //参数: ensure
-const char* IDENTIFIER::EnsureMessage(uint8_t ensure)
+const char* IDENTIFIER_class::EnsureMessage(uint8_t ensure)
 {
     const char *p;
     switch(ensure)
@@ -652,15 +652,14 @@ const char* IDENTIFIER::EnsureMessage(uint8_t ensure)
 }
 
 //显示确认码错误信息
-void IDENTIFIER::ShowErrMessage(uint8_t ensure)
+void IDENTIFIER_class::ShowErrMessage(uint8_t ensure)
 {
-    //OLED_ShowCH(5,0,(uint8_t*)EnsureMessage(ensure));
 	printf("%s\r\n",EnsureMessage(ensure));
 }
  
  
 //录指纹
-void IDENTIFIER::Add_FR(void)
+void IDENTIFIER_class::Add_FR(void)
 {
     uint8_t i = 0;
     uint8_t ensure, processnum = 0;
@@ -743,32 +742,10 @@ void IDENTIFIER::Add_FR(void)
         case 4:
                 printf("默认选择ID为1 \r\n");
             ID_NUM = 1;
-            #if 0
-        while(key_num != 3)
-        {
-            key_num = KEY_Scan(0);
-            if(key_num == 2)
-            {
-            key_num = 0;
-            if(ID_NUM > 0)
-                ID_NUM--;
-            }
-            if(key_num == 4)
-            {
-            key_num = 0;
-            if(ID_NUM < 99)
-                ID_NUM++;
-            }
-            OLED_ShowCH(40, 6, "ID=");
-            OLED_ShowNum(65, 6, ID_NUM, 2, 1);
-        }
-            
-        key_num = 0;
-                #endif
         ensure = PS_StoreChar(CharBuffer2, ID_NUM); //储存模板
         if(ensure == 0x00)
         {
-                    printf("录入指纹成功\r\n");
+            printf("录入指纹成功\r\n");
             vTaskDelay(1500 / portTICK_PERIOD_MS);
             return ;
         }
@@ -790,7 +767,7 @@ void IDENTIFIER::Add_FR(void)
 //SysPara AS608Para;//指纹模块AS608参数
 
 //刷指纹
-void IDENTIFIER::press_FR(void)
+void IDENTIFIER_class::press_FR(void)
 {
     SearchResult seach;
     uint8_t ensure;
@@ -809,12 +786,12 @@ void IDENTIFIER::press_FR(void)
                 printf("指纹验证成功\n");
                 //printf(str, " ID:%d 得分:%l ", seach.pageID, seach.mathscore);
                 //printf("%s\r\n",str);
-            vTaskDelay(1500 / portTICK_PERIOD_MS);
+                vTaskDelay(1500 / portTICK_PERIOD_MS);
             }
             else
             {
                 printf("验证失败\r\n");
-            vTaskDelay(1500 / portTICK_PERIOD_MS);
+                vTaskDelay(1500 / portTICK_PERIOD_MS);
             }
         }
         else
@@ -826,7 +803,7 @@ void IDENTIFIER::press_FR(void)
 }
  
 //删除单个指纹
-void IDENTIFIER::Del_FR(void)
+void IDENTIFIER_class::Del_FR(void)
 {
     uint8_t  ensure;
     uint16_t ID_NUM = 0;
@@ -843,7 +820,7 @@ void IDENTIFIER::Del_FR(void)
     
     }
     /*清空指纹库*/
-    void IDENTIFIER::Del_FR_Lib(void)
+    void IDENTIFIER_class::Del_FR_Lib(void)
     {
         uint8_t  ensure;
         printf("删除指纹库开始\r\n");
@@ -857,7 +834,7 @@ void IDENTIFIER::Del_FR(void)
     vTaskDelay(1500 / portTICK_PERIOD_MS);
 }
 
-uint32_t IDENTIFIER::PS_GetRandomCode()
+uint32_t IDENTIFIER_class::PS_GetRandomCode()
 {
     uint8_t  ensure;
     uint8_t *data = NULL;

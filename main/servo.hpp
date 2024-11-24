@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "UARTtrans.hpp"
 
-class SERVO
+class SERVO_class
 {
 private:
     char servoID[4] = "000";                                                //舵机编号，默认为000
@@ -18,8 +18,8 @@ public:
     bool servo_init(void);
     bool opendoor();
     void setServoID(char out_servoID);
-    SERVO(char *out_servoID);                                               //构造函数
-    ~SERVO();                                                               //析构函数
+    SERVO_class(char *out_servoID);                                               //构造函数
+    ~SERVO_class();                                                               //析构函数
 };
 
 #endif
