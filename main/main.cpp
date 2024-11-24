@@ -60,5 +60,5 @@ extern "C" void app_main(void)
     //xTaskCreate(servotask, "servotask", 12 * 1024, NULL, 1, NULL);
     //xTaskCreate(IDtask, "idtask", 12 * 1024, NULL, 1, NULL);
     xTaskCreate(WIFItask, "wifitask", 12 * 1024, NULL, 1, NULL);
-    //xTaskCreate(MQTTtask, "mqtttask", 12 * 1024, NULL, 1, NULL);
+    xTaskCreate(MQTTtask, "mqtttask", 12 * 1024, NULL, 1, NULL);
 }
