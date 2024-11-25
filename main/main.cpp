@@ -22,22 +22,23 @@ QueueHandle_t ID_servo_com_handle;  //指纹识别模块和舵机的通信队列
 TaskHandle_t servotask_handle;
 TaskHandle_t WIFI_MQTT_task_handle;
 TaskHandle_t IDtask_handle;
-/*
+
 void servotask(void *arg)
 {
     SERVO_class servo;  //创建舵机对象
     printf("舵机对象已创建\n");
-    BaseType_t xStatus;
-    BaseType_t xStatus1;
-    BaseType_t xStatus2;
+    BaseType_t ID_servo_com_status;
+    data4Tasks ID_servo_com;
+
     while (1)
     {
-        servo.opendoor();
-        printf("调用\n");
+        ID_servo_com_status = xQueueReceive(ID_servo_com_handle, &ID_servo_com.msg, 500/portTICK_PERIOD_MS);  //从队列ID_mqtt_com中取一条数据
+        if(ID_servo_com.msg) servo.opendoor();
+        printf("舵机已开门\n");
         vTaskDelay(5000/portTICK_PERIOD_MS);
     }
 }
-*/
+
 
 void WIFI_MQTT_task(void *arg)
 {
@@ -88,7 +89,9 @@ void IDtask(void *arg)
     {
         if(identifier.press_FR() == true){
             ID_mqtt_com.msg = RIGHTFINGER;
+            ID_servo_com.msg = 1;
             ID_mqtt_com_status = xQueueSendToFront(ID_mqtt_com_handle, &ID_mqtt_com.msg, 500/portTICK_PERIOD_MS);
+            ID_servo_com_status = xQueueSendToFront(ID_servo_com_handle, &ID_servo_com.msg, 500/portTICK_PERIOD_MS);
         }else{
             ID_mqtt_com.msg = WRONGFINGER;
             ID_mqtt_com_status = xQueueSendToFront(ID_mqtt_com_handle, &ID_mqtt_com.msg, 500/portTICK_PERIOD_MS);
@@ -96,8 +99,7 @@ void IDtask(void *arg)
         if( ID_mqtt_com_status == pdPASS) {
             printf("send data OK\n");  // 发送正常 
         }
-
-        vTaskDelay(5000/portTICK_PERIOD_MS);
+        vTaskDelay(10000/portTICK_PERIOD_MS);
     }    
 }
 
