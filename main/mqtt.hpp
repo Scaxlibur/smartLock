@@ -31,7 +31,7 @@ class MQTT_class{
     public:
     MQTT_class();
     ~MQTT_class();
-    void MQTTsendMessage(const char *data);
+    void sendMessage(const char *data);
 };
 
 #endif

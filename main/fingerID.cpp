@@ -767,7 +767,7 @@ void IDENTIFIER_class::Add_FR(void)
 //SysPara AS608Para;//指纹模块AS608参数
 
 //刷指纹
-void IDENTIFIER_class::press_FR(void)
+bool IDENTIFIER_class::press_FR(void)
 {
     SearchResult seach;
     uint8_t ensure;
@@ -787,11 +787,13 @@ void IDENTIFIER_class::press_FR(void)
                 //printf(str, " ID:%d 得分:%l ", seach.pageID, seach.mathscore);
                 //printf("%s\r\n",str);
                 vTaskDelay(1500 / portTICK_PERIOD_MS);
+                return true;
             }
             else
             {
                 printf("验证失败\r\n");
                 vTaskDelay(1500 / portTICK_PERIOD_MS);
+                return false;
             }
         }
         else

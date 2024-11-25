@@ -13,8 +13,8 @@
         // 建立连接成功
         case MQTT_EVENT_CONNECTED:
             printf("MQTT_client cnnnect to EMQ ok. \n");
-            // 发布主题，主题消息为“I am ESP32.”,自动计算有效载荷，qos=1
-            esp_mqtt_client_publish(client, "ESP32_Publish", "I am ESP32.", 0, 1, 0);
+            // 发布主题，主题消息为“SmartLock Connected”,自动计算有效载荷，qos=2，即只发送一次
+            esp_mqtt_client_publish(client, "ESP32_Publish", "SmartLock Connected", 0, 2, 0);
             // 订阅主题，qos=0
             esp_mqtt_client_subscribe(client, "ESP32_Subscribe", 0);           
             break;
@@ -78,8 +78,8 @@ void MQTT_class::mqtt_app_start(void)
 }
 
 
-void MQTT_class::MQTTsendMessage(const char *data){
-    esp_mqtt_client_publish(client, "ESP32_Publish", data, 0, 1, 0);
+void MQTT_class::sendMessage(const char *data){
+    esp_mqtt_client_publish(client, "ESP32_Publish", data, 0, 2, 0);
 }
 
 MQTT_class::MQTT_class(){

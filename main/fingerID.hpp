@@ -73,7 +73,7 @@ class IDENTIFIER_class
     ~IDENTIFIER_class();
 
     void Add_FR(void);
-    void press_FR(void);
+    bool press_FR(void);
     void Del_FR(void);
     void Del_FR_Lib(void);
 

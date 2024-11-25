@@ -1,15 +1,35 @@
-#include <stdio.h>
+#include <soc/soc.h> 
+#include <soc/rtc_cntl_reg.h>
+
 #include "fingerID.hpp"
 #include "screen.hpp"
 #include "servo.cpp"
 #include "wifi.cpp"
 #include "mqtt.cpp"
-                  
+
+#define RIGHTFINGER 1
+#define WRONGFINGER 2
+typedef struct{
+    int msg;
+}data4Tasks;
+
+TaskHandle_t xTask0;   //任务0的句柄
+TaskHandle_t xTask1;   //任务1的句柄
+
+QueueHandle_t ID_mqtt_com_handle;  //指纹识别模块和mqtt的通信队列
+QueueHandle_t ID_servo_com_handle;  //指纹识别模块和舵机的通信队列
+
+TaskHandle_t servotask_handle;
+TaskHandle_t WIFI_MQTT_task_handle;
+TaskHandle_t IDtask_handle;
 /*
 void servotask(void *arg)
 {
     SERVO_class servo;  //创建舵机对象
     printf("舵机对象已创建\n");
+    BaseType_t xStatus;
+    BaseType_t xStatus1;
+    BaseType_t xStatus2;
     while (1)
     {
         servo.opendoor();
@@ -32,20 +52,51 @@ void WIFI_MQTT_task(void *arg)
     wifi_init_sta();
     vTaskDelay(1000 / portTICK_PERIOD_MS);
     MQTT_class mqtt;
+
+    BaseType_t ID_mqtt_com_status;
+    data4Tasks ID_mqtt_com;
+    
     while(1) {
-        vTaskDelay(10 / portTICK_PERIOD_MS);
+        ID_mqtt_com_status = xQueueReceive( ID_mqtt_com_handle, &ID_mqtt_com.msg, 500/portTICK_PERIOD_MS);  //从队列ID_mqtt_com中取一条数据
+        if(ID_mqtt_com_status == pdPASS){
+            printf("get data OK\n");
+            switch (ID_mqtt_com.msg)
+            {
+            case RIGHTFINGER:
+                mqtt.sendMessage("Right finger!");
+                break;
+            case WRONGFINGER:
+                mqtt.sendMessage("Wrong finger!");
+                break;
+            default:
+                break;
+            }
+        }
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 
 void IDtask(void *arg)
 {
-    IDENTIFIER_class identifier;      //创建指纹识别器对象    
-    
+    IDENTIFIER_class identifier;        //创建指纹识别器对象    
+    data4Tasks ID_mqtt_com;             //创建和mqtt通信的消息队列
+    data4Tasks ID_servo_com;
+    BaseType_t ID_mqtt_com_status;
+    BaseType_t ID_servo_com_status;
     //identifier.Add_FR();
     while (1)
     {
-        identifier.press_FR();
-        
+        if(identifier.press_FR() == true){
+            ID_mqtt_com.msg = RIGHTFINGER;
+            ID_mqtt_com_status = xQueueSendToFront(ID_mqtt_com_handle, &ID_mqtt_com.msg, 500/portTICK_PERIOD_MS);
+        }else{
+            ID_mqtt_com.msg = WRONGFINGER;
+            ID_mqtt_com_status = xQueueSendToFront(ID_mqtt_com_handle, &ID_mqtt_com.msg, 500/portTICK_PERIOD_MS);
+        }
+        if( ID_mqtt_com_status == pdPASS) {
+            printf("send data OK\n");  // 发送正常 
+        }
+
         vTaskDelay(5000/portTICK_PERIOD_MS);
     }    
 }
@@ -53,7 +104,11 @@ void IDtask(void *arg)
 extern "C" void app_main(void)
 {
     printf("power on\n");
-    //xTaskCreate(servotask, "servotask", 12 * 1024, NULL, 1, NULL);
-    xTaskCreate(IDtask, "idtask", 12 * 1024, NULL, 2, NULL);
-    xTaskCreate(WIFI_MQTT_task, "WIFI_MQTT_task", 12 * 1024, NULL, 1, NULL);
+
+    ID_mqtt_com_handle = xQueueCreate(10, sizeof(data4Tasks));
+    ID_servo_com_handle = xQueueCreate(10, sizeof(data4Tasks));
+
+    //xTaskCreate(servotask, "servotask", 12 * 1024, NULL, 1, &servotask_handle);
+    xTaskCreate(IDtask, "idtask", 12 * 1024, NULL, 2, &IDtask_handle);
+    xTaskCreate(WIFI_MQTT_task, "WIFI_MQTT_task", 12 * 1024, NULL, 1, &WIFI_MQTT_task_handle);
 }
