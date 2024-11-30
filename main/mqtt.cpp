@@ -14,7 +14,7 @@
         case MQTT_EVENT_CONNECTED:
             printf("MQTT_client cnnnect to EMQ ok. \n");
             // 发布主题，主题消息为“SmartLock Connected”,自动计算有效载荷，qos=2，即只发送一次
-            esp_mqtt_client_publish(client, "ESP32_Publish", "SmartLock Connected", 0, 2, 0);
+            esp_mqtt_client_publish(client, "SmartLock_publish", "SmartLock Connected", 0, 2, 0);
             // 订阅主题，qos=0
             esp_mqtt_client_subscribe(client, "ESP32_Subscribe", 0);           
             break;
