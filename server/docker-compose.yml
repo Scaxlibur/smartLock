@@ -1,16 +1,25 @@
 version: '3.5'
 
 services:
-  emqx:
+  SmartLock-MQTT_Server:
     image: emqx/emqx:latest
-    container_name: emqx
+    container_name: SmartLock-MQTT_Server
     ports:
       - 18083:18083
       - 1883:1883
       - 8083:8083
       - 8081:8081
     volumes:
-      - ./data:/opt/emqx/data
-      - ./log:/opt/emqx/log
-      - ./etc:/opt/emqx/etc
+      - ./emqx/data:/opt/emqx/data
+      - ./emqx/log:/opt/emqx/log
+      - ./emqx/etc:/opt/emqx/etc
     restart: always
+
+  SmartLock-DataBase:
+    image: agrozyme/mariadb:latest
+    container_name: SmartLock-DataBase
+    volumes:
+      - ./mySQL:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE = SmartLockDataBase
+      - MYSQL_ROOT_PASSWORD = SmartLockDataBasePassword
