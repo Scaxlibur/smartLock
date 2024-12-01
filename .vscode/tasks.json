@@ -9,13 +9,13 @@
         "command": "${config:idf.pythonBinPathWin} ${config:idf.espIdfPathWin}\\tools\\idf.py build",
         "options": {
           "env": {
-            "PATH": "${env:PATH};${config:idf.customExtraPaths}"
+            "PATH": "${env:PATH}/client;${config:idf.customExtraPaths}"
           }
         }
       },
       "options": {
         "env": {
-          "PATH": "${env:PATH}:${config:idf.customExtraPaths}"
+          "PATH": "${env:PATH}/client:${config:idf.customExtraPaths}"
         }
       },
       "problemMatcher": [
@@ -68,13 +68,13 @@
         "command": "${config:idf.pythonBinPathWin} ${config:idf.espIdfPathWin}\\tools\\idf.py fullclean",
         "options": {
           "env": {
-            "PATH": "${env:PATH};${config:idf.customExtraPaths}"
+            "PATH": "${env:PATH}/client;${config:idf.customExtraPaths}"
           }
         }
       },
       "options": {
         "env": {
-          "PATH": "${env:PATH}:${config:idf.customExtraPaths}"
+          "PATH": "${env:PATH}/client:${config:idf.customExtraPaths}"
         }
       },
       "problemMatcher": [
@@ -103,13 +103,13 @@
         "command": "${config:idf.pythonBinPathWin} ${config:idf.espIdfPathWin}\\tools\\idf.py flash -p ${config:idf.portWin} -b ${config:idf.flashBaudRate}",
         "options": {
           "env": {
-            "PATH": "${env:PATH};${config:idf.customExtraPaths}"
+            "PATH": "${env:PATH}/client;${config:idf.customExtraPaths}"
           }
         }
       },
       "options": {
         "env": {
-          "PATH": "${env:PATH}:${config:idf.customExtraPaths}"
+          "PATH": "${env:PATH}/client:${config:idf.customExtraPaths}"
         }
       },
       "problemMatcher": [
@@ -138,13 +138,13 @@
         "command": "${config:idf.pythonBinPathWin} ${config:idf.espIdfPathWin}\\tools\\idf.py -p ${config:idf.portWin} monitor",
         "options": {
           "env": {
-            "PATH": "${env:PATH};${config:idf.customExtraPaths}"
+            "PATH": "${env:PATH}/client;${config:idf.customExtraPaths}"
           }
         }
       },
       "options": {
         "env": {
-          "PATH": "${env:PATH}:${config:idf.customExtraPaths}"
+          "PATH": "${env:PATH}/client:${config:idf.customExtraPaths}"
         }
       },
       "problemMatcher": [
@@ -180,13 +180,13 @@
         "command": "openocd.exe -s ${command:espIdf.getOpenOcdScriptValue} ${command:espIdf.getOpenOcdConfigs}",
         "options": {
           "env": {
-            "PATH": "${env:PATH};${config:idf.customExtraPaths}"
+            "PATH": "${env:PATH}/client;${config:idf.customExtraPaths}"
           }
         }
       },
       "options": {
         "env": {
-          "PATH": "${env:PATH}:${config:idf.customExtraPaths}"
+          "PATH": "${env:PATH}/client:${config:idf.customExtraPaths}"
         }
       },
       "problemMatcher": {
@@ -212,7 +212,7 @@
       "isBackground": true,
       "options": {
         "env": {
-          "PATH": "${env:PATH}:${config:idf.customExtraPaths}",
+          "PATH": "${env:PATH}/client:${config:idf.customExtraPaths}",
           "PYTHONPATH": "${command:espIdf.getExtensionPath}/esp_debug_adapter/debug_adapter"
         }
       },
@@ -249,7 +249,7 @@
         "command": "${config:idf.pythonBinPathWin}",
         "options": {
           "env": {
-            "PATH": "${env:PATH};${config:idf.customExtraPaths}",
+            "PATH": "${env:PATH}/client;${config:idf.customExtraPaths}",
             "PYTHONPATH": "${command:espIdf.getExtensionPath}/esp_debug_adapter/debug_adapter"
           }
         }
