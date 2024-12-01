@@ -10,13 +10,13 @@ import paho.mqtt.client as mqtt
 MYSQL_database = os.environ.get('MYSQL_DATABASE')
 MYSQL_password = os.environ.get('MYSQL_ROOT_PASSWORD') #MYSQL数据库和密码
 
-BROKER = '******.ala.cn-hangzhou.emqxsl.cn'  #MQTT地址
+BROKER = os.environ.get('MQTT_BROKER')  #MQTT地址
 PORT = 1883
-TOPIC = "python-mqtt/wss"
+TOPIC = os.environ.get('MQTT_TOPIC')
 # generate client ID with pub prefix randomly
 CLIENT_ID = f'python-mqtt-wss-sub-{random.randint(0, 1000)}'
-USERNAME = '*******'  #你的MQTT用户名
-PASSWORD = '*******'  #你的MQTT密码
+USERNAME = os.environ.get('MQTT_USERNAME')  #你的MQTT用户名
+PASSWORD = os.environ.get('MQTT_PASSWORD')  #你的MQTT密码
 
 FIRST_RECONNECT_DELAY = 1
 RECONNECT_RATE = 2
@@ -28,9 +28,9 @@ FLAG_EXIT = False
 # 配置数据库连接参数
 config = {
     'user': 'root',       # MySQL用户名
-    'password': 'environment',   # MySQL密码
+    'password': MYSQL_password,   # MySQL密码
     'host': '**********',   # MySQL服务器地址，本地为localhost
-    'database': '********', # 需要连接的数据库名
+    'database': MYSQL_database, # 需要连接的数据库名
     'raise_on_warnings': True
 }
 
