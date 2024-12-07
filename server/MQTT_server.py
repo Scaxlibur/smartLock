@@ -1,132 +1,76 @@
+import paho.mqtt.client as mqtt
 import logging
 import random
 import time
 import mysql.connector
 import os
 
-#from paho.mqtt import client as mqtt_client
-import paho.mqtt.client as mqtt
-
 MYSQL_database = os.environ.get('MYSQL_DATABASE')
 MYSQL_password = os.environ.get('MYSQL_ROOT_PASSWORD') #MYSQL数据库和密码
+MYSQL_address = os.environ.get('MYSQL_ADDRESS')
 
-BROKER = os.environ.get('MQTT_BROKER')  #MQTT地址
-PORT = 1883
-TOPIC = os.environ.get('MQTT_TOPIC')
-# generate client ID with pub prefix randomly
-CLIENT_ID = f'python-mqtt-wss-sub-{random.randint(0, 1000)}'
-USERNAME = os.environ.get('MQTT_USERNAME')  #你的MQTT用户名
-PASSWORD = os.environ.get('MQTT_PASSWORD')  #你的MQTT密码
+# MQTT配置
+MQTT_BROKER = os.environ.get('MQTT_BROKER')  #MQTT地址
+MQTT_PORT = 1883
+MQTT_TOPIC = os.environ.get('MQTT_TOPIC')
+MQTT_USERNAME = os.environ.get('MQTT_USERNAME')  #你的MQTT用户名
+MQTT_PASSWORD = os.environ.get('MQTT_ROOT_PASSWORD')  #你的MQTT密码
 
-FIRST_RECONNECT_DELAY = 1
-RECONNECT_RATE = 2
-MAX_RECONNECT_COUNT = 12
-MAX_RECONNECT_DELAY = 60
+# python3.8
 
-FLAG_EXIT = False
 
-# 配置数据库连接参数
-config = {
-    'user': 'root',       # MySQL用户名
-    'password': MYSQL_password,   # MySQL密码
-    'host': '**********',   # MySQL服务器地址，本地为localhost
-    'database': MYSQL_database, # 需要连接的数据库名
-    'raise_on_warnings': True
+
+# 连接到数据库
+#conn = mysql.connector.connect(**db_config)
+#cursor = conn.cursor()
+# MySQL数据库配置
+db_config = {
+    'host': MYSQL_address,
+    'user': 'root',
+    'password': MYSQL_password,  # 替换为你的root密码
+    'database': MYSQL_database
 }
 
-def on_connect(client, userdata, flags, rc):
-    if rc == 0 and client.is_connected():
-        print("Connected to MQTT Broker!")
-        client.subscribe(TOPIC)
-    else:
-        print(f'Failed to connect, return code {rc}')
+broker = MQTT_BROKER
+port = 1883
+topic = MQTT_TOPIC
+# generate client ID with pub prefix randomly
+client_id = f'python-mqtt-{random.randint(0, 100)}'
+username = MQTT_USERNAME
+password = MQTT_PASSWORD
 
+def on_connect(client, userdata, flags, reason_code, properties):
+    '''客户端从服务器接收到 CONNACK 响应时的回调'''
 
-def on_disconnect(client, userdata, rc):
-    logging.info("Disconnected with result code: %s", rc)
-    reconnect_count, reconnect_delay = 0, FIRST_RECONNECT_DELAY
-    while reconnect_count < MAX_RECONNECT_COUNT:
-        logging.info("Reconnecting in %d seconds...", reconnect_delay)
-        time.sleep(reconnect_delay)
+    print(f"Connected with result code {reason_code}")  # 成功连接时 reason_code 值为 Success
 
-        try:
-            client.reconnect()
-            logging.info("Reconnected successfully!")
-            return
-        except Exception as err:
-            logging.error("%s. Reconnect failed. Retrying...", err)
+    # 在on_connect()中执行订阅操作，意味着如果应用失去连接并且重新连接后，订阅将被续订。
+    if reason_code == 'Success':
+        client.subscribe(MQTT_TOPIC)
 
-        reconnect_delay *= RECONNECT_RATE
-        reconnect_delay = min(reconnect_delay, MAX_RECONNECT_DELAY)
-        reconnect_count += 1
-    logging.info("Reconnect failed after %s attempts. Exiting...", reconnect_count)
-    global FLAG_EXIT
-    FLAG_EXIT = True
+def on_disconnect(client, userdata, flags, reason_code, properties):
+    print(f'Disconnected with result code {reason_code}')
 
 
 def on_message(client, userdata, msg):
-    print(f'Received `{msg.payload.decode()}` from `{msg.topic}` topic')
-    connect_mysql()
+    '''从服务器收到 PUBLISH 消息时的回调。'''
+    print(msg.topic + ' ' + str(msg.payload)) # 输出值形如 $SYS/broker/version b'mosquitto version 2.0.18'
+    # 插入数据到数据库
+    #try:
+    #    cursor.execute("INSERT INTO mqtt_messages (message_data) VALUES (%s)", (data,))
+    #    conn.commit()
+    #except Exception as e:
+    #    print("Error saving data to database:", e)
 
+mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+mqttc.on_connect = on_connect
+mqttc.on_disconnect = on_disconnect
+mqttc.on_message = on_message
+ 
+mqttc.username_pw_set(username, password) # 设置访问账号和密码
 
-def connect_mqtt():
-    client = mqtt.Client(client_id=CLIENT_ID, transport='websockets',callback_api_version=mqtt.CallbackAPIVersion.VERSION1)
-    #client = mqtt_client.Client(CLIENT_ID, transport='websockets')
-    client.tls_set(ca_certs='./emqxsl-ca.crt')
-    client.username_pw_set(USERNAME, PASSWORD)
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.connect(BROKER, PORT, keepalive=120)
-    client.on_disconnect = on_disconnect
-    return client
+mqttc.connect(broker, 1883, 60)
 
-def connect_mysql():
-    try:
-        # 建立数据库连接
-        connection = mysql.connector.connect(**config)
-        if connection.is_connected():
-            db_info = connection.get_server_info()
-        print("成功连接到MySQL数据库，版本为：", db_info)
-        
-        # 创建一个游标对象，用于执行SQL语句
-        cursor = connection.cursor()
-        
-
-        # 插入数据
-        cursor.execute("""
-            INSERT INTO cti_ai_chat_logs (initiator, content)
-            VALUES ('John Doe', '2222222222222222')
-        """)
-        
-        # 提交事务
-        connection.commit()
-        
-        # 查询数据
-        cursor.execute("SELECT * FROM cti_ai_chat_logs")
-        for row in cursor:
-            print(row)
-        
-        # 关闭游标
-        cursor.close()
-        
-        # 关闭数据库连接
-        connection.close()
-        
-    except mysql.connector.Error as err:
-        print("发生错误：", err)
-    finally:
-        if connection.is_connected():
-            cursor.close()
-            connection.close()
-            print("MySQL连接已关闭")
-
-
-def run():
-    logging.basicConfig(format='%(asctime)s - %(levelname)s: %(message)s',
-                        level=logging.DEBUG)
-    client = connect_mqtt()
-    client.loop_forever()
-
-
-if __name__ == '__main__':
-    run()
+# 阻塞调用，处理网络流量、分派回调和处理重新连接
+# 有其它提供线程接口和手动接口的loop*()函数可用
+mqttc.loop_forever()
