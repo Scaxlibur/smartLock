@@ -34,7 +34,6 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-          folder: web
 
       - name: Deploy GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

@@ -6,12 +6,12 @@
 version: 2
 updates:
   - package-ecosystem: github-actions # See documentation for possible values
-    directory: "/" # Location of package manifests
+    directory: "/web" # Location of package manifests
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 99
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/web"
     schedule:
       interval: "daily"
     # Disable version updates for npm dependencies
