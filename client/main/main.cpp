@@ -98,7 +98,7 @@ void IDtask(void *arg)
         if( ID_mqtt_com_status == pdPASS) {
             printf("send data OK\n");  // 发送正常 
         }
-        vTaskDelay(10000/portTICK_PERIOD_MS);
+        vTaskDelay(5000/portTICK_PERIOD_MS);
     }    
 }
 
@@ -110,6 +110,6 @@ extern "C" void app_main(void)
     ID_servo_com_handle = xQueueCreate(10, sizeof(data4Tasks));
 
     xTaskCreate(servotask, "servotask", 12 * 1024, NULL, 1, &servotask_handle);
-    xTaskCreate(IDtask, "idtask", 12 * 1024, NULL, 2, &IDtask_handle);
+    xTaskCreate(IDtask, "idtask", 12 * 1024, NULL, 10, &IDtask_handle);
     xTaskCreate(WIFI_MQTT_task, "WIFI_MQTT_task", 12 * 1024, NULL, 1, &WIFI_MQTT_task_handle);
 }
