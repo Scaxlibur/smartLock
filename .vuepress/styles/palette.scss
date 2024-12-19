@@ -1,0 +1,42 @@
+/*
+参考样式：
+https://moonvy.com/blog/post/2022/diffusion-accelerates-diffusion/#%E7%BB%98%E7%94%BB%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7
+代码来源：https://theme-hope.vuejs.press/zh/config/style.html
+*/
+
+$vp-c-text: (
+  light: rgb(60 60 67),
+  dark: rgb(235 235 245 / 70%),
+);
+
+$vp-navbar: (
+  light: #fff,
+  dark: #252232,
+);
+
+// content
+$vp-c-bg: (
+  light: #fff,
+  dark: #252232,
+);
+
+$vp-c-bg-alt: (
+  light: #f6f6f7,
+  dark: #2c293d,
+);
+
+$vp-c-bg-elv: (
+  light: #fff,
+  dark: #252232,
+);
+
+// 边框
+$vp-c-border: (
+  light: #c2c2c4,
+  dark: #302d28,
+);
+
+$vp-c-gutter: (
+  light: #e2e2e3,
+  dark: #191722,
+);
