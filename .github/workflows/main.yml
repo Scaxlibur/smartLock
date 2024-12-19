@@ -3,7 +3,6 @@ name: docs build
 on:
   push:
     branches:
-      # 确保这是你正在使用的分支名称
       - main
 
 permissions:
@@ -12,8 +11,6 @@ permissions:
 jobs:
   LearnData-build:
     runs-on: ubuntu-latest
-    env:
-      FTP_HOST: ${{ secrets.ftp_host }}
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
@@ -40,4 +37,4 @@ jobs:
         with:
           # 指定静态文件部署到的分支
           branch: gh-pages
-          folder: web/docs/.vuepress/dist
+          folder: /docs/.vuepress/dist
