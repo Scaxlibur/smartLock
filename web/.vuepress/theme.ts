@@ -9,8 +9,8 @@ export default hopeTheme({
   // https://icon-sets.iconify.design/
   iconAssets: "iconify",
   author: {
-    name: "Scaxlibur博客",
-    url: "https://scaxlibur.github.io/",
+    name: "SmartLock数据统计",
+    url: "https://scaxlibur.github.io/smartlock",
   },
 
   favicon: "/favicon.ico",
