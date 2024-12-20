@@ -109,7 +109,7 @@ extern "C" void app_main(void)
     ID_mqtt_com_handle = xQueueCreate(10, sizeof(data4Tasks));
     ID_servo_com_handle = xQueueCreate(10, sizeof(data4Tasks));
 
-    //xTaskCreate(servotask, "servotask", 12 * 1024, NULL, 1, &servotask_handle);
+    xTaskCreate(servotask, "servotask", 12 * 1024, NULL, 1, &servotask_handle);
     xTaskCreate(IDtask, "idtask", 12 * 1024, NULL, 10, &IDtask_handle);
-    //xTaskCreate(WIFI_MQTT_task, "WIFI_MQTT_task", 12 * 1024, NULL, 1, &WIFI_MQTT_task_handle);
+    xTaskCreate(WIFI_MQTT_task, "WIFI_MQTT_task", 12 * 1024, NULL, 1, &WIFI_MQTT_task_handle);
 }

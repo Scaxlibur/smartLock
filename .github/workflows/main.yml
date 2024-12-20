@@ -37,13 +37,12 @@ jobs:
         env:
           NODE_OPTIONS: --max_old_space_size=8192
         run: |-
-          pnpm cpx "docs/reading/**" docs/.vuepress/public/reading
           pnpm run docs:build
-          > docs/.vuepress/dist/.nojekyll
+          > web/.vuepress/dist/.nojekyll
 
       - name: Deploy GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           # 指定静态文件部署到的分支
           branch: gh-pages
-          folder: docs/.vuepress/dist
+          folder: web/.vuepress/dist
