@@ -3,6 +3,7 @@
 #include "servo.cpp"
 #include "wifi.cpp"
 #include "mqtt.cpp"
+#include "su03t.hpp"
 
 #define RIGHTFINGER 1
 #define WRONGFINGER 2
@@ -15,10 +16,13 @@ TaskHandle_t xTask1;   //任务1的句柄
 
 QueueHandle_t ID_mqtt_com_handle;  //指纹识别模块和mqtt的通信队列
 QueueHandle_t ID_servo_com_handle;  //指纹识别模块和舵机的通信队列
+QueueHandle_t ID_su03t_com_handle;  //指纹识别模块和su03t的通信队列
 
 TaskHandle_t servotask_handle;
 TaskHandle_t WIFI_MQTT_task_handle;
 TaskHandle_t IDtask_handle;
+TaskHandle_t su03t_task_handle;
+
 
 void servotask(void *arg)
 {
@@ -81,16 +85,20 @@ void IDtask(void *arg)
     IDENTIFIER_class identifier;        //创建指纹识别器对象    
     data4Tasks ID_mqtt_com;             //创建和mqtt通信的消息队列
     data4Tasks ID_servo_com;
+    data4Tasks ID_su03t_com;
     BaseType_t ID_mqtt_com_status;
     BaseType_t ID_servo_com_status;
+    BaseType_t ID_su03t_com_status;
     //identifier.Add_FR();
     while (1)
     {
         if(identifier.press_FR() == true){
             ID_mqtt_com.msg = RIGHTFINGER;
             ID_servo_com.msg = 1;
+            ID_su03t_com.msg = 1;
             ID_mqtt_com_status = xQueueSendToFront(ID_mqtt_com_handle, &ID_mqtt_com.msg, 50/portTICK_PERIOD_MS);
             ID_servo_com_status = xQueueSendToFront(ID_servo_com_handle, &ID_servo_com.msg, 50/portTICK_PERIOD_MS);
+            ID_su03t_com_status = xQueueSendToFront(ID_su03t_com_handle, &ID_su03t_com.msg, 50/portTICK_PERIOD_MS);
         }else{
             ID_mqtt_com.msg = WRONGFINGER;
             ID_mqtt_com_status = xQueueSendToFront(ID_mqtt_com_handle, &ID_mqtt_com.msg, 50/portTICK_PERIOD_MS);
@@ -102,14 +110,35 @@ void IDtask(void *arg)
     }    
 }
 
+void su03t_task(void *arg){
+    SU03T_class su03t;  //创建舵机对象
+    printf("su03t对象已创建\n");
+    BaseType_t ID_su03t_com_status;
+    data4Tasks ID_su03t_com;
+
+    while (1)
+    {
+        ID_su03t_com_status = xQueueReceive(ID_su03t_com_handle, &ID_su03t_com.msg, 500/portTICK_PERIOD_MS);  //从队列ID_servo_com中取一条数据
+        if(ID_su03t_com_status == pdPASS){
+            if(ID_su03t_com.msg) su03t.manbo();
+            printf("manbo\n");
+        }
+        vTaskDelay(50/portTICK_PERIOD_MS);
+    }
+}
+
+
 extern "C" void app_main(void)
 {
     printf("power on\n");
 
     ID_mqtt_com_handle = xQueueCreate(10, sizeof(data4Tasks));
     ID_servo_com_handle = xQueueCreate(10, sizeof(data4Tasks));
+    ID_su03t_com_handle = xQueueCreate(10, sizeof(data4Tasks));
 
     xTaskCreate(servotask, "servotask", 12 * 1024, NULL, 1, &servotask_handle);
     xTaskCreate(IDtask, "idtask", 12 * 1024, NULL, 10, &IDtask_handle);
     xTaskCreate(WIFI_MQTT_task, "WIFI_MQTT_task", 12 * 1024, NULL, 1, &WIFI_MQTT_task_handle);
+    xTaskCreate(su03t_task, "su03t_task", 12 * 1024, NULL, 10, &su03t_task_handle);
+
 }

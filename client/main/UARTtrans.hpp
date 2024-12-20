@@ -18,9 +18,14 @@
 #define UART_NUM_SERVO_TX GPIO_NUM_40
 #define UART_NUM_SERVO_RX GPIO_NUM_41
 
+#define UART_NUM_SU03T UART_NUM_0
+#define UART_NUM_SU03T_TX UART_PIN_NO_CHANGE
+#define UART_NUM_SU03T_RX UART_PIN_NO_CHANGE
+
 void init_uart2id(void);
 void init_uart2screen(void);
 void init_uart2servo(void);
+void init_uart2su03t(void);
 
 void IDUARTwrite_Bytes(uint8_t data);
 void IDUARTwrite_Bytes(uint16_t data);

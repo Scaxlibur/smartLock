@@ -1,5 +1,5 @@
 #ifndef __SERVO_HPP__
-#define __SERVP_HPP__
+#define __SERVO_HPP__
 #pragma once
 
 #include <stdint.h>

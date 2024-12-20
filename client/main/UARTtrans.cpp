@@ -29,6 +29,15 @@ const uart_config_t uart2servo_config = {
     .source_clk = UART_SCLK_DEFAULT
 };
 
+const uart_config_t uart2su03t_config = {
+    .baud_rate = 9600,
+    .data_bits = UART_DATA_8_BITS,
+    .parity = UART_PARITY_DISABLE,
+    .stop_bits = UART_STOP_BITS_1,
+    .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+    .source_clk = UART_SCLK_DEFAULT
+};
+
 void init_uart2id(void)            //配置连接到指纹识别器的UART
 {
     if(uart_is_driver_installed(UART_NUM_ID) == false){//注册驱动前检查，避免重复注册报错
@@ -53,6 +62,15 @@ void init_uart2servo(void)         //配置连接到舵机的UART
         ESP_ERROR_CHECK(uart_param_config(UART_NUM_SERVO, &uart2servo_config));
         ESP_ERROR_CHECK(uart_set_pin(UART_NUM_SERVO, UART_NUM_SERVO_TX, UART_NUM_SERVO_RX, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
         ESP_ERROR_CHECK(uart_driver_install(UART_NUM_SERVO, RX_BUF_SIZE * 2, 0, 0, NULL, 0));
+    };
+}
+
+void init_uart2su03t(void)
+{
+    if(uart_is_driver_installed(UART_NUM_SU03T) == false){
+        ESP_ERROR_CHECK(uart_param_config(UART_NUM_SU03T, &uart2su03t_config));
+        ESP_ERROR_CHECK(uart_set_pin(UART_NUM_SU03T, UART_NUM_SU03T_TX, UART_NUM_SU03T_RX, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
+        ESP_ERROR_CHECK(uart_driver_install(UART_NUM_SU03T, RX_BUF_SIZE * 2, 0, 0, NULL, 0));
     };
 }
 
